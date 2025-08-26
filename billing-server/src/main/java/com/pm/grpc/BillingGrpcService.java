@@ -8,6 +8,14 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/*
+##############################################
+
+ THIS IS OUR gRPC SERVER
+
+##############################################
+*/
+
 @GrpcService
 public class BillingGrpcService extends BillingServiceGrpc.BillingServiceImplBase {
 

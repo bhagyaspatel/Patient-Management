@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.pm</groupId>
-    <artifactId>billing-server</artifactId>
+    <artifactId>billing-service</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>billing-service</name>
     <description>billing-service</description>
