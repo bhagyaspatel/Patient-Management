@@ -7,7 +7,7 @@ option java_package = "billing";
 
 service BillingService{
   rpc CreateBillingAccount (BillingRequest) returns (stream BillingResponse); // stream: defines that server can send multiple messages/responses to back to client
-//  rpc CreateBillingAccount (BillingRequest) returns ( BillingResponse);
+  //  rpc CreateBillingAccount (BillingRequest) returns ( BillingResponse);
 }
 
 // Message in a proto file defines the data structure - like defining a class, struct, or JSON schema.

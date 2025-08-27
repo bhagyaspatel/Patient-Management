@@ -16,10 +16,10 @@ import org.slf4j.LoggerFactory;
 ##############################################
 */
 
-@GrpcService
-public class BillingGrpcService extends BillingServiceGrpc.BillingServiceImplBase {
+@GrpcService 
+public class BillingServiceGrpcServer extends BillingServiceGrpc.BillingServiceImplBase {
 
-    private static final Logger log = LoggerFactory.getLogger(BillingGrpcService.class);
+    private static final Logger log = LoggerFactory.getLogger(BillingServiceGrpcServer.class);
     @Override
     public void createBillingAccount(BillingRequest request, StreamObserver<BillingResponse> responseObserver) {
         log.info("createBillingAccount request receieved {}", request.toString());
