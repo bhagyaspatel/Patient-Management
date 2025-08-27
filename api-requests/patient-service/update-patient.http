@@ -1,0 +1,11 @@
+### PUT request to update a patient
+
+PUT http://localhost:4000/patients/6a52b6d9-df01-4189-a3fe-bf5e7a376f5f
+Content-Type: application/json
+
+{
+  "name": "Bhagya S Patel",
+  "address": "B-504, Sun Residency, Surat, Gujarat, 395009",
+  "email": "bhagyaspatel0911@gmail.com",
+  "dateOfBirth": "2002-11-09"
+}

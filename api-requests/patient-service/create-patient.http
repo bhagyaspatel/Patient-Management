@@ -1,0 +1,12 @@
+### POST request to create a patient
+
+POST http://localhost:4000/patients
+Content-Type: application/json
+
+{
+  "name": "Bhagya Patel",
+  "email": "bhagyaspatel0913@gmail.com",
+  "address": "B-504, Sun Residency, Surat, Gujarat, 395009",
+  "dateOfBirth": "2002-11-09",
+  "registeredDate": "2018-10-15"
+}
