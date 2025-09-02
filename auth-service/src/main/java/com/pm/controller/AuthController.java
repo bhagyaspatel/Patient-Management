@@ -36,6 +36,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(
             @RequestBody LoginRequestDto loginRequestDTO) {
+        System.out.println("Login Request came");
 
         Optional<String> tokenOptional = authService.authenticate(loginRequestDTO);
 

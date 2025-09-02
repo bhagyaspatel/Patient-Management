@@ -5,6 +5,16 @@ spring:
   cloud:
     gateway:
       routes:
+        # API gateway: http://localhost:4004/auth/login
+        # auth service: http://auth-service:4005/login
+        - id: auth-service-route
+          uri: http://auth-service:4005
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1
+
+
         - id: patient-service-route
           uri: http://patient-service:4000
           predicates:
@@ -13,13 +23,21 @@ spring:
             - StripPrefix=1 # strips the first word after the first slash
             # api gateway: http://localhost:4004/api/patients
             # patient service: http://patient-service:4000/patients
+            - JwtValidation # specifies that we want jwt verification: looks for AbstractGatewayFilterFactory for rules
 
         - id: api-doc-patient-route
           uri: http://patient-service:4000
           predicates:
-            - Path=/api-doc/patients
+            - Path=/api-docs/patients
           filters:
-            - RewritePath=/api-doc/patients,/v3/api-doc
+            - RewritePath=/api-docs/patients,/v3/api-docs
             # api gateway: http://localhost:4004/api-doc/patients
             # patient service: http://patient-service:4000/v3/api-doc
+
+        - id: api-doc-auth-route
+          uri: http://auth-service:4005
+          predicates:
+            - Path=/api-docs/auth
+          filters:
+            - RewritePath=/api-docs/auth,/v3/api-docs
 

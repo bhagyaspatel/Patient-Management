@@ -1,6 +1,7 @@
 ### GET REQUEST TO GET ALL PATIENTS
 #GET http://localhost:4000/patients --> Before api gateway
 
-GET http://localhost:4004/api/patients
+ GET http://localhost:4004/api/patients
+Authorization: Bearer {{token}}
 
 ###
