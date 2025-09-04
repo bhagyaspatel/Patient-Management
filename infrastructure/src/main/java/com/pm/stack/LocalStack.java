@@ -1,9 +1,10 @@
 package com.pm.stack;
 
+import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.*;
 
 public class LocalStack extends Stack {
-
+    private final Vpc vpc;
     /*
     A stack is a collection of AWS resources (EC2, RDS, S3, VPC, IAM roles, etc.) that you create, manage, and delete as a single unit.
     You define the resources in a CloudFormation template (YAML/JSON).
@@ -11,6 +12,16 @@ public class LocalStack extends Stack {
     */
     public LocalStack(final App scope, final String id, final StackProps props){
         super(scope, id, props);
+        
+        this.vpc = createVpc();
+    }
+
+    private Vpc createVpc() {
+         return Vpc.Builder
+                 .create(this, "PatientManagementVpc")
+                 .vpcName("PatientManagementVpc")
+                 .maxAzs(2) // maximum availability zones
+                 .build();
     }
 
     public static void main(String[] args) {
