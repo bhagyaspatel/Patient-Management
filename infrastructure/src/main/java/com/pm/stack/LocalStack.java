@@ -1,7 +1,12 @@
 package com.pm.stack;
 
+import software.amazon.awscdk.services.ec2.InstanceClass;
+import software.amazon.awscdk.services.ec2.InstanceSize;
+import software.amazon.awscdk.services.ec2.InstanceType;
 import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.*;
+import software.amazon.awscdk.services.rds.*;
+import software.amazon.awscdk.services.route53.CfnHealthCheck;
 
 public class LocalStack extends Stack {
     private final Vpc vpc;
@@ -14,6 +19,14 @@ public class LocalStack extends Stack {
         super(scope, id, props);
         
         this.vpc = createVpc();
+
+        DatabaseInstance authServiceDb = createDatabase("AuthServiceDB", "auth-service-db");
+
+        CfnHealthCheck authDbHealthCheck = createDbHealthCheck(authServiceDb, "AuthServiceDbHealthCheck");
+
+        DatabaseInstance patientServiceDb = createDatabase("AuthServiceDB", "auth-service-db");
+
+        CfnHealthCheck patientDbHealthCheck = createDbHealthCheck(patientServiceDb, "PatientServiceDbHealthCheck");
     }
 
     private Vpc createVpc() {
@@ -22,6 +35,37 @@ public class LocalStack extends Stack {
                  .vpcName("PatientManagementVpc")
                  .maxAzs(2) // maximum availability zones
                  .build();
+    }
+
+    private DatabaseInstance createDatabase(String id, String dbname){
+        return DatabaseInstance.Builder
+                .create(this, id)
+                .engine(DatabaseInstanceEngine.postgres(
+                        PostgresInstanceEngineProps
+                                .builder()
+                                .version(PostgresEngineVersion.VER_17_2)
+                                .build()
+                ))
+                .vpc(vpc)
+                .instanceType(InstanceType.of(InstanceClass.BURSTABLE2, InstanceSize.MICRO)) // specifies the CPU, storage power etc. For localstack does not matter much
+                .allocatedStorage(20)
+                .credentials(Credentials.fromGeneratedSecret("admin"))
+                .databaseName(dbname)
+                .removalPolicy(RemovalPolicy.DESTROY) // so each time we destroy the stack, the data is destroyed, good for development purposes
+                .build();
+    }
+
+    private CfnHealthCheck createDbHealthCheck(DatabaseInstance db, String id){
+        return CfnHealthCheck.Builder.create(this, id)
+                .healthCheckConfig(CfnHealthCheck.HealthCheckConfigProperty.builder()
+                        .type("TCP")
+                        .port(Token.asNumber(db.getDbInstanceEndpointPort()))
+                        .ipAddress(db.getDbInstanceEndpointAddress())
+                        .requestInterval(30) // checks db health every 30 seconds
+                        .failureThreshold(3)
+                        .build()
+                )
+                .build();
     }
 
     public static void main(String[] args) {
