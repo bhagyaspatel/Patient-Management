@@ -187,7 +187,7 @@ public class LocalStack extends Stack {
                 ContainerDefinitionOptions.builder()
                         .image(ContainerImage.fromRegistry(API_GATEWAY_IMAGE_NAME)) // for localstack it will know to where to pull our local image from
                         .environment(Map.of(
-                                "SPRING_PROFILES_ACTIVE", "prod",
+                                "SPRING_PROFILES_ACTIVE", "prod", // checks for the application.yml file which has "prod" word in it's filename
                                 "AUTH_SERVICE_URL", "http://host.docker.internal:4005" //localstack does not implement service discover very well, so we are going to use docker internal service discovery
                         ))
                         .portMappings(List.of(4004).stream()
