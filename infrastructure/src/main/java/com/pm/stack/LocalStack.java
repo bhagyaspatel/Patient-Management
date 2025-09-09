@@ -3,6 +3,8 @@ package com.pm.stack;
 import software.amazon.awscdk.services.ec2.*;
 import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.ec2.InstanceType;
+import software.amazon.awscdk.services.ecs.CloudMapNamespaceOptions;
+import software.amazon.awscdk.services.ecs.Cluster;
 import software.amazon.awscdk.services.msk.CfnCluster;
 import software.amazon.awscdk.services.rds.*;
 import software.amazon.awscdk.services.route53.CfnHealthCheck;
@@ -11,6 +13,8 @@ import java.util.stream.Collectors;
 
 public class LocalStack extends Stack {
     private final Vpc vpc;
+
+    private final Cluster ecsCluster;
     /*
     A stack is a collection of AWS resources (EC2, RDS, S3, VPC, IAM roles, etc.) that you create, manage, and delete as a single unit.
     You define the resources in a CloudFormation template (YAML/JSON).
@@ -25,11 +29,13 @@ public class LocalStack extends Stack {
 
         CfnHealthCheck authDbHealthCheck = createDbHealthCheck(authServiceDb, "AuthServiceDbHealthCheck");
 
-        DatabaseInstance patientServiceDb = createDatabase("AuthServiceDB", "auth-service-db");
+        DatabaseInstance patientServiceDb = createDatabase("Patient ServiceDB", "patient-service-db");
 
         CfnHealthCheck patientDbHealthCheck = createDbHealthCheck(patientServiceDb, "PatientServiceDbHealthCheck");
 
         CfnCluster mskCluster = createMskCluster();
+
+        this.ecsCluster = createEcsCluster();
     }
 
     private Vpc createVpc() {
@@ -37,6 +43,14 @@ public class LocalStack extends Stack {
                  .create(this, "PatientManagementVpc")
                  .vpcName("PatientManagementVpc")
                  .maxAzs(2) // maximum availability zones
+                 .build();
+    }
+
+    // to find a service inside our cluster we can do: auth-service.<cluster-namespace>: ie. auth-service.patient-management.local
+    private Cluster createEcsCluster(){
+         return Cluster.Builder.create(this, "PatientManagementCluster")
+                 .vpc(vpc)
+                 .defaultCloudMapNamespace(CloudMapNamespaceOptions.builder().name("patient-management.local").build())
                  .build();
     }
 
